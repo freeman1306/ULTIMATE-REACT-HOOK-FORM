@@ -1,19 +1,27 @@
 import React from 'react';
+//utils
+import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers';
+import Typography from '@material-ui/core/Typography';
+
+//components
 import { MainContainer } from './components/MainContainer';
 import { Form } from './components/Form';
 import { Input } from './components/Input';
 import { PrimaryButton } from './components/PrimaryButton';
-import Typography from '@material-ui/core/Typography';
-import { yupResolver } from '@hookform/resolvers';
-import * as yup from 'yup';
 
+// shareing data
+import { useData } from './DataContext';
+
+//validation schema
 const schema = yup.object().shape({
   firstName: yup
     .string()
     .matches(/^([^0-9]*)$/, 'First name should not contain numbers')
     .required('First name is a required field'),
+
   lastName: yup
     .string()
     .matches(/^([^0-9]*)$/, 'Last name should not contain numbers')
@@ -21,7 +29,12 @@ const schema = yup.object().shape({
 });
 
 export const Step1 = () => {
+  const { setValues, data } = useData();
   const { register, handleSubmit, errors } = useForm({
+    dedaultValues: {
+      firstName: data.firstName,
+      lastName: data.lastName,
+    },
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
@@ -29,6 +42,7 @@ export const Step1 = () => {
 
   const onSubmit = (data) => {
     history.push('/step2');
+    setValues(data);
   };
 
   return (
@@ -37,7 +51,7 @@ export const Step1 = () => {
         Step 1
       </Typography>
 
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Input
           ref={register}
           name="firstName"

@@ -39,4 +39,3 @@ app.post("/", async (req, res) => {
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
-© 2020 GitHub, Inc.
